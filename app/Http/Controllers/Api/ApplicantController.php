@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Applicant;
+use App\Batch;
+use App\Course;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -130,11 +132,33 @@ class ApplicantController extends Controller
         $applicant = Applicant::find($id); 
         if(!is_null($applicant)) {
             $applicant->delete();
+            return response()->json([
+                'status' => 200,
+                'message' => 'Suiccessfully Deleted!'
+            ], 200);
+        }
+        else {
+            return response()->json([
+                'status' => 400,
+                'message' => 'Applicant Not Found!'
+            ], 400);
         }
     }
 
     public function upload(Request $request) {
         $fileName = time() . "-ws." . $request->file('image')->getClientOriginalExtension();
         echo $request->file('image')->storeAs('public/uploads', $fileName);
+    }
+
+    public function getAllTableCount() {
+        $applicants = Applicant::count();
+        $batches = Batch::count();
+        $courses = Course::count();
+
+        return response()->json([
+            'applicants' => $applicants,
+            'batches' => $batches,
+            'courses' => $courses
+        ], 200);
     }
 }

@@ -129,5 +129,6 @@ DB::statement("
 ### create another migration for adding new column in courses table
 php artisan make:migration add_another_column_to_courses_table
 ### create batchs table
-php artisan make:migration create_batchs_table
-
+php artisan make:migration create_batches_table
+php artisan make:model Batch
+php artisan make::migration add_columns_to_applicants_table

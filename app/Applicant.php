@@ -2,7 +2,6 @@
 
 namespace App;
 
-// use App\Course;
 use Illuminate\Database\Eloquent\Model;
 
 class Applicant extends Model
@@ -12,5 +11,9 @@ class Applicant extends Model
 
     function course() {
         return $this->hasMany('App\Course', 'course_id', 'course_id');
+    }
+    public function batch()
+    {
+        return $this->belongsTo('App\Batch', 'batch_id', 'batch_id');
     }
 }
