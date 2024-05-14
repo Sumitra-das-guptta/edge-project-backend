@@ -83,6 +83,68 @@ class BatchController extends Controller
         }
     }
 
+    public function update(Request $request, $id) {
+        // Get the course by ID
+        $batch = Batch::find($id);
+        
+        // If the course doesn't exist, return an error response
+        if (!$batch) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Batch not found!'
+            ], 404);
+        }
+        // Get the JSON string from the request
+        $jsonData = $request->all();
+        // Check if JSON data is null or empty
+        if (empty($jsonData)) {
+            return response()->json([
+                'status' => 422,
+                'message' => 'No data provided!'
+            ], 422);
+        }
+        // Decode the JSON data
+        // $formDataArray = json_decode($jsonData, true);
+    
+        // Trim whitespace from the beginning and end of each value in the array
+        $trimmedDataArray = array_map('trim', $jsonData);
+    
+        // Validate the form data
+        $validator = Validator::make($trimmedDataArray, [
+            'batchName' => 'required',
+            'startDate' => 'required',
+            'course_id' => 'required|exists:courses,course_id',
+        ]);
+    
+        // If validation fails, return an error response
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 422,
+                'errors' => $validator->messages()
+            ], 422);
+        }
+    
+        // Update the course information
+        $batch->batchName = $trimmedDataArray['batchName'];
+        $batch->startDate = $trimmedDataArray['startDate'];
+        $batch->endDate = $trimmedDataArray['endDate'];
+        $batch->course_id = $trimmedDataArray['course_id'];
+        $batch->save();
+    
+        // Check if the course update was successful
+        if ($batch) {
+            return response()->json([
+                'status' => 200,
+                'message' => 'Batch Updated Successfully'
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Something went wrong'
+            ], 500);
+        }
+    }
+
     public function getBatch($id)
     {
         $batch = Batch::with('course', 'applicants')->findOrFail($id);
@@ -95,5 +157,22 @@ class BatchController extends Controller
         $batches = Batch::with('course', 'applicants')->get();
 
         return response()->json(['batches' => $batches]);
+    }
+
+    public function destroy($id) {
+        $batch = Batch::find($id); 
+        if(!is_null($batch)) {
+            $batch->delete();
+            return response()->json([
+                'status' => 200,
+                'message' => 'Successfully Deleted!'
+            ], 200);
+        }
+        else {
+            return response()->json([
+                'status' => 400,
+                'message' => 'Batch Not Found!'
+            ], 400);
+        }
     }
 }
