@@ -12,11 +12,19 @@ use Illuminate\Support\Facades\Validator;
 class ApplicantController extends Controller
 {
     public function store(Request $request) {
-        $k=preg_replace('/\s+/', '',$request->input('formdata'));
-        $formDataArray = json_decode($k, true);
+        // $k=preg_replace('/\s+/', '',$request->input('formdata'));
+        // $formDataArray = json_decode($k, true);
+        // Get the JSON string from the request
+        $jsonData = $request->input('formdata');
+        
+        // Decode the JSON data
+        $formDataArray = json_decode($jsonData, true);
+
+        // Trim whitespace from the beginning and end of each value in the array
+        $trimmedDataArray = array_map('trim', $formDataArray);
         // Debugging: Output the request data
         // print_r($formDataArray);
-        $validator = Validator::make($formDataArray, [
+        $validator = Validator::make($trimmedDataArray, [
             'identityNo' => 'required|string|unique:applicants,identityNo',
             'email' => 'required|email|unique:applicants,email',
         ]);
@@ -30,48 +38,50 @@ class ApplicantController extends Controller
         else {
             //insert query
         $applicant = new Applicant;
-        $jsonData = json_decode($k, true);
+        // $jsonData = json_decode($k, true);
         // $fileName = time() . "-ws." . $request->file('image')->getClientOriginalExtension();
-        $fileName = $jsonData['identityNo'] . "-" . $request->file('image')->getClientOriginalName();
+        $fileName = $trimmedDataArray['identityNo'] . "-" . $request->file('image')->getClientOriginalName();
         $path = $request->file('image')->storeAs('public/uploads', $fileName);
         // Decode JSON data
         // $jsonData = json_decode($request->input('formdata'), true);
-        $k = trim($request->input('formdata'));
+        // $k = trim($request->input('formdata'));
+        // Trim whitespace from the beginning and end of each value in the array
+        // $k = array_map('trim', $formDataArray);
         // echo $request->file('image')->storeAs('public/uploads', $fileName);
         // $file = $request->file('file');
         // $filePath = $file->store('files');
-        $applicant->courseName = $jsonData['courseName'];
-        $applicant->trainingOrganizerUniversity = $jsonData['trainingOrganizerUniversity'];
-        $applicant->organizerDeptOrInstituteOrCenter = $jsonData['organizerDeptOrInstituteOrCenter'];
-        $applicant->candidateName = $jsonData['candidateName'];
-        $applicant->fatherName = $jsonData['fatherName'];
-        $applicant->motherName = $jsonData['motherName'];
-        $applicant->gender = $jsonData['gender'];
-        $applicant->religion = $jsonData['religion'];
-        $applicant->birthDate = $jsonData['birthDate'];
-        $applicant->nationality = $jsonData['nationality'];
+        $applicant->courseName = $trimmedDataArray['courseName'];
+        $applicant->trainingOrganizerUniversity = $trimmedDataArray['trainingOrganizerUniversity'];
+        $applicant->organizerDeptOrInstituteOrCenter = $trimmedDataArray['organizerDeptOrInstituteOrCenter'];
+        $applicant->candidateName = $trimmedDataArray['candidateName'];
+        $applicant->fatherName = $trimmedDataArray['fatherName'];
+        $applicant->motherName = $trimmedDataArray['motherName'];
+        $applicant->gender = $trimmedDataArray['gender'];
+        $applicant->religion = $trimmedDataArray['religion'];
+        $applicant->birthDate = $trimmedDataArray['birthDate'];
+        $applicant->nationality = $trimmedDataArray['nationality'];
         $applicant->image_path = $fileName;
-        $applicant->presentAddressRoadNo = $jsonData['presentAddressRoadNo'];
-        $applicant->presentAddressThanaName = $jsonData['presentAddressThanaName'];
-        $applicant->presentAddressDistrictName = $jsonData['presentAddressDistrictName'];
-        $applicant->presentAddressDivisionName = $jsonData['presentAddressDivisionName'];
-        $applicant->permanentAddressRoadNo = $jsonData['permanentAddressRoadNo'];
-        $applicant->permanentAddressThanaName = $jsonData['permanentAddressThanaName'];
-        $applicant->permanentAddressDistrictName = $jsonData['permanentAddressDistrictName'];
-        $applicant->permanentAddressDivisionName = $jsonData['permanentAddressDivisionName'];
-        $applicant->mobileNumber = $jsonData['mobileNumber'];
-        $applicant->gurdianMobileNumber = $jsonData['gurdianMobileNumber'];
-        $applicant->levelOfEducation = $jsonData['levelOfEducation'];
-        $applicant->subjectName = $jsonData['subjectName'];
-        $applicant->universityName = $jsonData['universityName'];
-        $applicant->departmentName = $jsonData['departmentName'];
-        $applicant->trainingLocation = $jsonData['trainingLocation'];
-        $applicant->linkedinProfile = $jsonData['linkedinProfile'];
-        $applicant->projectRepository = $jsonData['projectRepository'];
-        $applicant->freelancingProfile = $jsonData['freelancingProfile'];
-        $applicant->identityNo = $jsonData['identityNo'];
-        $applicant->email = $jsonData['email'];
-        $applicant->course_id = $jsonData['course_id'];
+        $applicant->presentAddressRoadNo = $trimmedDataArray['presentAddressRoadNo'];
+        $applicant->presentAddressThanaName = $trimmedDataArray['presentAddressThanaName'];
+        $applicant->presentAddressDistrictName = $trimmedDataArray['presentAddressDistrictName'];
+        $applicant->presentAddressDivisionName = $trimmedDataArray['presentAddressDivisionName'];
+        $applicant->permanentAddressRoadNo = $trimmedDataArray['permanentAddressRoadNo'];
+        $applicant->permanentAddressThanaName = $trimmedDataArray['permanentAddressThanaName'];
+        $applicant->permanentAddressDistrictName = $trimmedDataArray['permanentAddressDistrictName'];
+        $applicant->permanentAddressDivisionName = $trimmedDataArray['permanentAddressDivisionName'];
+        $applicant->mobileNumber = $trimmedDataArray['mobileNumber'];
+        $applicant->gurdianMobileNumber = $trimmedDataArray['gurdianMobileNumber'];
+        $applicant->levelOfEducation = $trimmedDataArray['levelOfEducation'];
+        $applicant->subjectName = $trimmedDataArray['subjectName'];
+        $applicant->universityName = $trimmedDataArray['universityName'];
+        $applicant->departmentName = $trimmedDataArray['departmentName'];
+        $applicant->trainingLocation = $trimmedDataArray['trainingLocation'];
+        $applicant->linkedinProfile = $trimmedDataArray['linkedinProfile'];
+        $applicant->projectRepository = $trimmedDataArray['projectRepository'];
+        $applicant->freelancingProfile = $trimmedDataArray['freelancingProfile'];
+        $applicant->identityNo = $trimmedDataArray['identityNo'];
+        $applicant->email = $trimmedDataArray['email'];
+        $applicant->course_id = $trimmedDataArray['course_id'];
         $applicant->save();
 
         if($applicant) {
@@ -88,6 +98,108 @@ class ApplicantController extends Controller
         }
 
         }
+        
+    }
+
+    public function update(Request $request, $id) {
+        // Get the Applicant by ID
+        $applicant = Applicant::find($id);
+        
+        // If the Applicant doesn't exist, return an error response
+        if (!$applicant) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Applicant not found!'
+            ], 404);
+        }
+        // Get the JSON string from the request
+        $jsonData = $request->input('formdata');
+        
+        // Check if JSON data is null or empty
+        if (empty($jsonData)) {
+            return response()->json([
+                'status' => 422,
+                'message' => 'No data provided!'
+            ], 422);
+        }
+        // Decode the JSON data
+        $formDataArray = json_decode($jsonData, true);
+
+        // Trim whitespace from the beginning and end of each value in the array
+        $trimmedDataArray = array_map('trim', $formDataArray);
+    
+        // Validate the form data
+        $validator = Validator::make($trimmedDataArray, [
+            'identityNo' => 'required|string|unique:applicants,identityNo,'.$id,
+            'email' => 'required|email|unique:applicants,email,'.$id,
+        ]);
+    
+        // If validation fails, return an error response
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 422,
+                'errors' => $validator->messages()
+            ], 422);
+        }
+    
+        // Update the applicant information
+        if($request->hasFile('image')) {
+            $fileName = $trimmedDataArray['identityNo'] . "-" . $request->file('image')->getClientOriginalName();
+            $path = $request->file('image')->storeAs('public/uploads', $fileName);
+            $applicant->image_path = $fileName;
+        }
+        if((int)$applicant['course_id'] !== (int)$trimmedDataArray['course_id']) {
+            $applicant->course_id = $trimmedDataArray['course_id'];
+            $applicant->batch_id = null;
+        }
+        $applicant->courseName = $trimmedDataArray['courseName'];
+        $applicant->trainingOrganizerUniversity = $trimmedDataArray['trainingOrganizerUniversity'];
+        $applicant->organizerDeptOrInstituteOrCenter = $trimmedDataArray['organizerDeptOrInstituteOrCenter'];
+        $applicant->candidateName = $trimmedDataArray['candidateName'];
+        $applicant->fatherName = $trimmedDataArray['fatherName'];
+        $applicant->motherName = $trimmedDataArray['motherName'];
+        $applicant->gender = $trimmedDataArray['gender'];
+        $applicant->religion = $trimmedDataArray['religion'];
+        $applicant->birthDate = $trimmedDataArray['birthDate'];
+        $applicant->nationality = $trimmedDataArray['nationality'];
+        $applicant->presentAddressRoadNo = $trimmedDataArray['presentAddressRoadNo'];
+        $applicant->presentAddressThanaName = $trimmedDataArray['presentAddressThanaName'];
+        $applicant->presentAddressDistrictName = $trimmedDataArray['presentAddressDistrictName'];
+        $applicant->presentAddressDivisionName = $trimmedDataArray['presentAddressDivisionName'];
+        $applicant->permanentAddressRoadNo = $trimmedDataArray['permanentAddressRoadNo'];
+        $applicant->permanentAddressThanaName = $trimmedDataArray['permanentAddressThanaName'];
+        $applicant->permanentAddressDistrictName = $trimmedDataArray['permanentAddressDistrictName'];
+        $applicant->permanentAddressDivisionName = $trimmedDataArray['permanentAddressDivisionName'];
+        $applicant->mobileNumber = $trimmedDataArray['mobileNumber'];
+        $applicant->gurdianMobileNumber = $trimmedDataArray['gurdianMobileNumber'];
+        $applicant->levelOfEducation = $trimmedDataArray['levelOfEducation'];
+        $applicant->subjectName = $trimmedDataArray['subjectName'];
+        $applicant->universityName = $trimmedDataArray['universityName'];
+        $applicant->departmentName = $trimmedDataArray['departmentName'];
+        $applicant->trainingLocation = $trimmedDataArray['trainingLocation'];
+        $applicant->linkedinProfile = $trimmedDataArray['linkedinProfile'];
+        $applicant->projectRepository = $trimmedDataArray['projectRepository'];
+        $applicant->freelancingProfile = $trimmedDataArray['freelancingProfile'];
+        $applicant->identityNo = $trimmedDataArray['identityNo'];
+        $applicant->email = $trimmedDataArray['email'];
+        
+        // $applicant->batch_id = null;
+        // Save the updated applicant data
+        $applicant->save();
+    
+        // Check if the applicant update was successful
+        if ($applicant) {
+            return response()->json([
+                'status' => 200,
+                'message' => 'Applicant Updated Successfully'
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Something went wrong'
+            ], 500);
+        }
+    
         
     }
 
@@ -134,7 +246,7 @@ class ApplicantController extends Controller
             $applicant->delete();
             return response()->json([
                 'status' => 200,
-                'message' => 'Suiccessfully Deleted!'
+                'message' => 'Successfully Deleted!'
             ], 200);
         }
         else {

@@ -25,6 +25,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::post('candidates', [ApplicantController::class, 'store']);
 Route::get('candidates', [ApplicantController::class, 'view']);
 Route::delete('candidates/delete/{id}', [ApplicantController::class, 'destroy']);
+Route::post('candidates/{id}', [ApplicantController::class, 'update']);
 
 Route::post('candidate/details', [ApplicantController::class, 'getCandidateInfoByEmail']);
 Route::get('candidates/count', [ApplicantController::class, 'getAllTableCount']);
@@ -43,3 +44,7 @@ Route::post('batches/add-applicants', [BatchController::class, 'addApplicantsToB
 Route::post('batches/create', [BatchController::class, 'create']);
 Route::get('batches/{id}', [BatchController::class, 'getBatch']);
 Route::get('batches', [BatchController::class, 'getAllBatches']);
+Route::delete('batches/delete/{id}', [BatchController::class, 'destroy']);
+Route::put('batches/{id}', [BatchController::class, 'update']);
+
+

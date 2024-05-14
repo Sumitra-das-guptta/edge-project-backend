@@ -10,7 +10,7 @@ class Applicant extends Model
     protected $primaryKey = 'id';
 
     function course() {
-        return $this->hasMany('App\Course', 'course_id', 'course_id');
+        return $this->belongsTo('App\Course', 'course_id', 'course_id');
     }
     public function batch()
     {
