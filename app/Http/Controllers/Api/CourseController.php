@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Validator;
 class CourseController extends Controller
 {
     public function view() {
-        $courses = Course::with('applicants')->get();
+        $courses = Course::with('applicants', 'batches')->get();
         $status = 200;
         $data = compact('courses', 'status');
         return response()->json($data, 200);
@@ -67,9 +67,33 @@ class CourseController extends Controller
     }
 
     public function destroy($id) {
-        $course = Course::find($id); 
+        $course = Course::with('applicants', 'batches')->find($id); 
         if(!is_null($course)) {
-            $course->delete();
+            if($course->applicants->count() > 0) {
+                return response()->json([
+                    'status' => 422,
+                    'message' => 'This course has registered applicants!'
+                ], 422);
+            }
+            else if($course->batches->count() > 0) {
+                return response()->json([
+                    'status' => 422,
+                    'message' => 'This course has multiple batches!'
+                ], 422);
+            }
+            else {
+                $course->delete();
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'Successfully Deleted!'
+                ], 200);
+            }
+        }
+        else {
+            return response()->json([
+                'status' => 400,
+                'message' => 'Course Not Found!'
+            ], 400);
         }
     }
 

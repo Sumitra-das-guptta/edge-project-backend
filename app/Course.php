@@ -15,6 +15,6 @@ class Course extends Model
 
     public function batches()
     {
-        return $this->hasMany('App\Batch', 'batch_id', 'batch_id');
+        return $this->hasMany('App\Batch', 'course_id', 'course_id');
     }
 }
