@@ -28,6 +28,7 @@ Route::delete('candidates/delete/{id}', [ApplicantController::class, 'destroy'])
 Route::post('candidates/{id}', [ApplicantController::class, 'update']);
 
 Route::post('candidate/details', [ApplicantController::class, 'getCandidateInfoByEmail']);
+Route::get('candidates/course/{id}', [ApplicantController::class, 'getCandidateInfoByCourseId']);
 Route::get('candidates/count', [ApplicantController::class, 'getAllTableCount']);
 
 

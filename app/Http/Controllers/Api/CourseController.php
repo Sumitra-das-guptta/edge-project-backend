@@ -44,6 +44,7 @@ class CourseController extends Controller
         $course = new Course;
         $course->name = $trimmedDataArray['name'];
         $course->description = $trimmedDataArray['description'];
+        $course->credit_hours = $trimmedDataArray['credit_hours'];
         $course->trainingOrganizerUniversity = $trimmedDataArray['trainingOrganizerUniversity'];
         $course->organizerDeptOrInstituteOrCenter = $trimmedDataArray['organizerDeptOrInstituteOrCenter'];
         $course->trainingLocation = $trimmedDataArray['trainingLocation'];
@@ -142,6 +143,7 @@ class CourseController extends Controller
         // Update the course information
         $course->name = $trimmedDataArray['name'];
         $course->description = $trimmedDataArray['description'];
+        $course->credit_hours = $trimmedDataArray['credit_hours'];
         $course->trainingOrganizerUniversity = $trimmedDataArray['trainingOrganizerUniversity'];
         $course->organizerDeptOrInstituteOrCenter = $trimmedDataArray['organizerDeptOrInstituteOrCenter'];
         $course->trainingLocation = $trimmedDataArray['trainingLocation'];

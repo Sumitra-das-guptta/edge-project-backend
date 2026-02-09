@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Admin;
 use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Http\Request;
@@ -84,11 +85,18 @@ class AuthController extends Controller
         if ($user) {
             // Clear OTP
             $user->update(['otp' => null]);
+            $admin = Admin::where('email', $request->email)->first();
+            if ($admin) {
+                return response()->json(['message' => 'OTP verified successfully', 'role' => 'ADMIN'], 200);
+            }
+            else {
+                return response()->json(['message' => 'OTP verified successfully', 'role' => 'USER'], 200);
+            }
 
             // Generate access token (optional)
             // $accessToken = $user->createToken('authToken')->accessToken;
 
-            return response()->json(['message' => 'OTP verified successfully'], 200);
+            
         }
 
         // If user doesn't exist or OTP is incorrect
