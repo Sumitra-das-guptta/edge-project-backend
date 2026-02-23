@@ -6,8 +6,10 @@ use App\Admin;
 use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class AuthController extends Controller
@@ -34,7 +36,7 @@ class AuthController extends Controller
 
         // Check if the user with the provided email exists
         $user = User::where('email', $request->email)->first();
-
+        
         if ($user) {
             // Update existing user's OTP in the database
             $user->otp = $otp;
@@ -60,8 +62,7 @@ class AuthController extends Controller
             Mail::to($request->email)->send(new \App\Mail\SendOtpMail($mailDetails));
             return response()->json(['message' => 'OTP sent successfully'], 200);
         } catch (\Exception $e) {
-            
-            return response()->json(['message' => 'OTP sent failed'], 400);
+            return response()->json(['message' => 'OTP sent failed', 'error' => $e], 400);
         }
 
                 
@@ -101,5 +102,53 @@ class AuthController extends Controller
 
         // If user doesn't exist or OTP is incorrect
         return response()->json(['message' => 'Invalid OTP'], 401);
+    }
+
+     /**
+     * Login User
+     */
+    public function login(Request $request)
+    {
+        $request->validate([
+            'email'    => 'required|email',
+            'password' => 'required'
+        ]);
+
+        if (!Auth::attempt($request->only('email', 'password'))) {
+            return response()->json([
+                'message' => 'Invalid credentials'
+            ], 401);
+        }
+
+        $user = Auth::user();
+
+        $token = $user->createToken('apiToken')->plainTextToken;
+
+        return response()->json([
+            'message' => 'Login successful',
+            'user' => $user,
+            'access_token' => $token,
+            'token_type' => 'Bearer'
+        ]);
+    }
+
+    /**
+     * Logout User (Revoke Current Token)
+     */
+    public function logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+
+        return response()->json([
+            'message' => 'Logged out successfully'
+        ]);
+    }
+
+    /**
+     * Get Authenticated User
+     */
+    public function me(Request $request)
+    {
+        return response()->json($request->user());
     }
 }
